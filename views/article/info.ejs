@@ -1,0 +1,21 @@
+<%- include('../layout/header.ejs') %>
+
+<div class="container">
+  <h1 class="text-center">
+    <%= content.title %>
+    <% if(islogin && user.id == content.authorId ){ %>
+    <!--只有登录，且登录人的Id和文章作者Id相同，才应该展示编辑按钮-->
+    <a href="/article/edit/<%= content.id %>" class="btn btn-info pull-right">编辑</a>
+    <% } %>
+
+  </h1>
+  <hr>
+
+  <div>
+    <%- content.content %>
+
+  </div>
+</div>
+
+
+<%- include('../layout/footer.ejs') %>

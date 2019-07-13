@@ -1,0 +1,60 @@
+<%- include('../layout/header.ejs') %>
+
+<link rel="stylesheet" href="/node_modules/mditor/dist/css/mditor.min.css">
+<script src="/node_modules/mditor/dist/js/mditor.min.js"></script>
+
+<div class="container">
+  <h1>编辑文章页</h1>
+  <hr>
+  <form id="form">
+    <!--应该把文章的标题，作为 隐藏域，保存到 表单中-->
+    <input type="hidden" name="id" value="<%= article.id %>">
+    <div class="form-group">
+      <label>文章标题：</label>
+      <input type="text" name="title" class="form-control" required value="<%= article.title %>">
+    </div>
+
+    <div class="form-group">
+      <label>文章内容：</label>
+      <textarea name="content" class="form-control" id="editor"><%= article.content %></textarea>
+    </div>
+
+    <div class="form-group">
+      <input type="submit" value="保存文章" class="btn btn-primary">
+    </div>
+  </form>
+</div>
+
+<script>
+  $(function () {
+    var mditor = Mditor.fromTextarea(document.getElementById('editor'));
+
+    $('#form').on('submit', function (e) {
+      e.preventDefault();
+      let acticleId = $('[name="id"]').val();
+      let title = $('[name="title"]').val();
+      let content = $('[name="content"]').val();
+      $.ajax({
+        type: "POST", //默认get
+        url: "http://127.0.0.1/article/changeArticleApi/" + acticleId,
+        data: {
+          'title': title,
+          'content': content
+        },
+        dataType: "json",
+        success: function (response) { //请求成功回调
+          console.log(response);
+          if (response.status != 200) return alert(response.msg);
+          location.replace(document.referrer);
+        },
+        error: function (e) { //请求超时回调
+          if (e.statusText == "timeout") {
+            alert("请求超时");
+          }
+        }
+      });
+    })
+  })
+</script>
+
+<%- include('../layout/footer.ejs') %>
